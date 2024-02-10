@@ -43,22 +43,39 @@ const MyDeformedArray = [
 const $template = document.getElementById("template").content;
 const $fragment = document.createDocumentFragment();
 const $array = document.getElementById("array");
-const myEstudents = [...MyArray, ...MyDeformedArray];
 const nameValid = ["name", "firstName"];
 const imageValid = ["avatar", "icon"];
 
-const iterador = (array, dataName, dataImg) => {
-  array.forEach((el) => {
+const normalize = (arrayToNormalize1, arrayToNormalize2, dataName, dataImg) => {
+  const normalizedArr1 = arrayToNormalize1.map((el) => ({
+    name: el.hasOwnProperty(dataName[0]) ? el[dataName[0]] : "",
+    title: el.title,
+    buttontext: el.buttontext,
+    icon: el.hasOwnProperty(dataImg[0]) ? el[dataImg[0]] : "",
+  }));
+
+  const normalizedArr2 = arrayToNormalize2.map((el) => ({
+    name: el.hasOwnProperty(dataName[1]) ? el[dataName[1]] : "",
+    title: el.title,
+    buttontext: el.buttontext,
+    icon: el.hasOwnProperty(dataImg[1]) ? el[dataImg[1]] : "",
+  }));
+
+  const myEstudens = [...normalizedArr1, ...normalizedArr2];
+  return myEstudens;
+};
+
+const myEstudents = normalize(MyArray, MyDeformedArray, nameValid, imageValid);
+
+const representarObjetosArray = (arrayToRepresent) => {
+  arrayToRepresent.forEach((el) => {
     const $clone = $template.cloneNode(true);
     const $img = $clone.querySelector(".template-img");
     const $name = $clone.querySelector(".template-name");
-
-    const imgUrl = dataImg.find((prop) => el.hasOwnProperty(prop)) || "";
-    const name = dataName.find((prop) => el.hasOwnProperty(prop)) || "";
-
-    $img.src = el[imgUrl];
-    $name.textContent = el[name];
-
+    const imgUrl = el.icon;
+    const name = el.name;
+    $img.src = el.icon;
+    $name.textContent = el.name;
     $clone.querySelector(".template-description").textContent = el.title;
     $clone.querySelector(".template-buttonFollow").textContent = el.buttontext;
     $fragment.append($clone);
@@ -67,7 +84,4 @@ const iterador = (array, dataName, dataImg) => {
   $array.append($fragment);
 };
 
-const representarObjetosArray = (array, dataName, dataImg) => {
-  iterador(array, dataName, dataImg);
-};
-representarObjetosArray(myEstudents, nameValid, imageValid);
+representarObjetosArray(myEstudents);
